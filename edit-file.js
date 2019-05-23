@@ -8,22 +8,30 @@ console.log(`Editing file: ${file}`);
 
 let writeData = (Math.floor(Math.random() * 1000)).toString();
 
-fs.readFile(file[0], (err, data) => {
-  if (err) {
-    console.error(err);
-  }
-  else {
-    console.log(`Previous file contents: ${data.toString()}`);
-  }
-});
+function getPreviousFileContents(file, newData, callback) {
+  fs.readFile(file, (err, currentData) => {
+    if (err) {
+      console.error(err);
+    }
+    else {
+      console.log(`Previous file contents: ${currentData.toString()}`);
+      callback(file, newData);
+    }
+  });
+}
 
-fs.createWriteStream(file[0]).write(writeData);
+function editFile(file, data) {
+  fs.createWriteStream(file).write(data);
 
-fs.readFile(file[0], (err, data) => {
-  if (err) {
-    console.error(err);
-  }
-  else {
-    console.log(`Updated file contents: ${data.toString()}`);
-  }
-});
+  fs.readFile(file, (err, data) => {
+    if (err) {
+      console.error(err);
+    }
+    else {
+      console.log(`Updated file contents: ${data.toString()}`);
+    }
+  });
+}
+
+getPreviousFileContents(file[0], writeData, editFile);
+
